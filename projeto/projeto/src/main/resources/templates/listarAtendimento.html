@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listagem de Atendimentos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-5">Listagem de Atendimentos</h2>
+
+    <a href="/atendimentos" class="btn btn-primary mb-3">Voltar ao Cadastro</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Horário Inicial</th>
+                <th>Horário Final</th>
+                <th>Valor</th>
+                <th>Desconto</th>
+                <th>Valor Total</th>
+                <th>Método de Pagamento</th>
+                <th>Status</th>
+                <th>Convênio</th>
+                <th>Descrição</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="atendimento : ${atendimentos}">
+                <td th:text="${atendimento.id}"></td>
+                <td th:text="${atendimento.nome}"></td>
+                <td th:text="${#dates.format(atendimento.horarioInicial, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#dates.format(atendimento.horarioFinal, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${atendimento.valor}"></td>
+                <td th:text="${atendimento.desconto}"></td>
+                <td th:text="${atendimento.valorTotal}"></td>
+                <td th:text="${atendimento.metodoPagamento}"></td>
+                <td th:text="${atendimento.status}"></td>
+                <td th:text="${atendimento.convenio}"></td>
+                <td th:text="${atendimento.descricao}"></td>
+                <td>
+                    <a th:href="@{/detalhes/{id}(id=${atendimento.id})}" class="btn btn-info">Detalhes</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </html>
