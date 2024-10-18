@@ -9,5 +9,5 @@ package com.gerenciamentoPsicologico.projeto.controller;
  * @author erick
  */
 public class AtendimentoController {
-    
+    // eu so preciso preencher aqui quando eu for mexer com db
 }
