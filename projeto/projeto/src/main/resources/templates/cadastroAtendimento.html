@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h2 class="mt-5">Cadastro de Atendimento</h2>
-    <form action="#" th:action="@{/cadastro}" th:object="${atendimento}" method="post">
+    <form action="#" th:action="@{/atendimentos/salvar}" th:object="${atendimento}" method="post">
         <div class="form-group">
             <label for="nome">Nome:</label>
             <input type="text" id="nome" th:field="*{nome}" class="form-control" required>
@@ -96,11 +96,53 @@
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Cadastrar</button>
-            <a href="/listarAtendimento" class="btn btn-secondary">Listar Atendimentos</a>
+            <a href="/atendimentos/listarAtendimento" class="btn btn-secondary">Listar Atendimentos</a>
         </div>
 
     </form>
 </div>
+    <script>
+    function cadastrarAtendimento() {
+        const nome = $('#nome').val();
+        const horarioInicial = $('#horarioInicial').val();
+        const horarioFinal = $('#horarioFinal').val();
+        const valor = $('#valor').val();
+        const desconto = $('#desconto').val();
+        const valorTotal = $('#valorTotal').val();
+        const metodoPagamento = $('#metodoPagamento').val();
+        const status = $('#status').val();
+        const convenio = $('#convenio').val();
+        const descricao = $('#descricao').val();
+
+        $.ajax({
+            url: '/atendimentos/salvar',  // Endpoint para salvar atendimento
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                nome: nome,
+                horarioInicial: horarioInicial,
+                horarioFinal: horarioFinal,
+                valor: valor,
+                desconto: desconto,
+                valorTotal: valorTotal,
+                metodoPagamento: metodoPagamento,
+                status: status,
+                convenio: convenio,
+                descricao: descricao
+            }),
+        
+            success: function() {
+                alert('Atendimento cadastrado com sucesso!');
+                window.location.href = '/atendimentos/listar'; // Redireciona para a lista de atendimentos após cadastro
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro ao cadastrar o atendimento:", status, error);
+                alert('Erro ao cadastrar o atendimento: ' + xhr.responseText);
+            }
+        });
+    }
+</script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

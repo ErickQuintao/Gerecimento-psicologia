@@ -9,7 +9,7 @@
 <div class="container">
     <h2 class="mt-5">Listagem de Atendimentos</h2>
 
-    <a href="/atendimentos" class="btn btn-primary mb-3">Voltar ao Cadastro</a>
+    <a href="/atendimentos/cadastro" class="btn btn-primary mb-3">Voltar ao Cadastro</a>
 
     <table class="table table-bordered">
         <thead>
@@ -42,7 +42,7 @@
                 <td th:text="${atendimento.convenio}"></td>
                 <td th:text="${atendimento.descricao}"></td>
                 <td>
-                    <a th:href="@{/detalhes/{id}(id=${atendimento.id})}" class="btn btn-info">Detalhes</a>
+                    <a th:href="@{/atendimentos/detalhes/{id}(id=${atendimento.id})}" class="btn btn-info">Detalhes</a>
                 </td>
             </tr>
         </tbody>

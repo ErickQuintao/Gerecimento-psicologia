@@ -81,7 +81,7 @@
             <button type="button" onclick="excluirAtendimento()" class="btn btn-danger mt-3">Excluir</button>
         </form>
 
-        <a href="/listar-atendimentos" class="btn btn-secondary mt-3">Voltar para a Lista</a>
+        <a href="/atendimentos/listarAtendimento" class="btn btn-secondary mt-3">Voltar para a Lista</a>
     </div>
 
     <script>
@@ -99,8 +99,6 @@
             var convenio = document.getElementById("convenio").value;
             var descricao = document.getElementById("descricao").value;
 
-    
-            /*
             $.ajax({
                 url: '/atendimentos/atualizar/' + id,
                 method: 'POST',
@@ -118,14 +116,14 @@
                 },
                 success: function(response) {
                     // Lógica para tratar a resposta, como redirecionar para a lista
-                    window.location.href = '/listar-atendimentos';
+                    window.location.href = '/atendimentos/listar';
                 },
                 error: function(error) {
                     // Lógica para tratar erro
                     alert('Erro ao atualizar atendimento.');
                 }
             });
-            */
+            
         }
 
         function excluirAtendimento() {
@@ -137,7 +135,7 @@
                 method: 'DELETE',
                 success: function(response) {
                     // Lógica para tratar a resposta, como redirecionar para a lista
-                    window.location.href = '/listar-atendimentos';
+                    window.location.href = '/listar-atendimentos';s
                 },
                 error: function(error) {
                     // Lógica para tratar erro
