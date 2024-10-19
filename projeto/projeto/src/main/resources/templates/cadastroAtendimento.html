@@ -2,150 +2,116 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Atendimento</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h2 class="mt-5">Cadastro de Atendimento</h2>
-    <form action="#" th:action="@{/atendimentos/salvar}" th:object="${atendimento}" method="post">
+<div class="container mt-5">
+    <h2>Cadastro de Atendimento</h2>
+    <form id="cadastroAtendimentoForm">
         <div class="form-group">
             <label for="nome">Nome:</label>
-            <input type="text" id="nome" th:field="*{nome}" class="form-control" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}">
-                <span th:errors="*{nome}">Nome é obrigatório.</span>
-            </div>
+            <input type="text" id="nome" name="nome" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="horarioInicial">Horário Inicial:</label>
-            <input type="datetime-local" id="horarioInicial" th:field="*{horarioInicial}" class="form-control" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('horarioInicial')}">
-                <span th:errors="*{horarioInicial}">Horário inicial é obrigatório.</span>
-            </div>
+            <input type="datetime-local" id="horarioInicial" name="horarioInicial" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="horarioFinal">Horário Final:</label>
-            <input type="datetime-local" id="horarioFinal" th:field="*{horarioFinal}" class="form-control" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('horarioFinal')}">
-                <span th:errors="*{horarioFinal}">Horário final é obrigatório.</span>
-            </div>
+            <input type="datetime-local" id="horarioFinal" name="horarioFinal" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="valor">Valor:</label>
-            <input type="number" id="valor" th:field="*{valor}" class="form-control" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('valor')}">
-                <span th:errors="*{valor}">Valor é obrigatório.</span>
-            </div>
+            <input type="number" id="valor" name="valor" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="desconto">Desconto:</label>
-            <input type="number" id="desconto" th:field="*{desconto}" class="form-control">
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('desconto')}">
-                <span th:errors="*{desconto}">Desconto é inválido.</span>
-            </div>
+            <input type="number" id="desconto" name="desconto" class="form-control">
         </div>
 
         <div class="form-group">
             <label for="valorTotal">Valor Total:</label>
-            <input type="number" id="valorTotal" th:field="*{valorTotal}" class="form-control" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('valorTotal')}">
-                <span th:errors="*{valorTotal}">Valor total é obrigatório.</span>
-            </div>
+            <input type="number" id="valorTotal" name="valorTotal" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="metodoPagamento">Método de Pagamento:</label>
-            <select id="metodoPagamento" th:field="*{metodoPagamento}" class="form-control" required>
+            <select id="metodoPagamento" name="metodoPagamento" class="form-control" required>
                 <option value="" disabled selected>Selecione o método de pagamento</option>
                 <option value="Dinheiro">Dinheiro</option>
                 <option value="PIX">PIX</option>
                 <option value="Cartão">Cartão</option>
             </select>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('metodoPagamento')}">
-                <span th:errors="*{metodoPagamento}">Método de pagamento é obrigatório.</span>
-            </div>
         </div>
-
 
         <div class="form-group">
             <label for="status">Status:</label>
-            <select id="status" th:field="*{status}" class="form-control" required>
+            <select id="status" name="status" class="form-control" required>
                 <option value="" disabled selected>Selecione o status</option>
                 <option value="Agendado">Agendado</option>
                 <option value="Andamento">Em Andamento</option>
                 <option value="Finalizado">Finalizado</option>
             </select>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('status')}">
-                <span th:errors="*{status}">Status é obrigatório.</span>
-            </div>
         </div>
 
         <div class="form-group">
             <label for="convenio">Convênio:</label>
-            <input type="text" id="convenio" th:field="*{convenio}" class="form-control">
+            <input type="text" id="convenio" name="convenio" class="form-control">
         </div>
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <textarea id="descricao" th:field="*{descricao}" class="form-control"></textarea>
+            <textarea id="descricao" name="descricao" class="form-control"></textarea>
         </div>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
-            <a href="/atendimentos/listarAtendimento" class="btn btn-secondary">Listar Atendimentos</a>
-        </div>
-
+        <button type="button" class="btn btn-primary" onclick="cadastrarAtendimento()">Cadastrar</button>
+        <a href="/atendimentos/listar" class="btn btn-secondary">Listar Atendimentos</a>
     </form>
 </div>
-    <script>
-    function cadastrarAtendimento() {
-        const nome = $('#nome').val();
-        const horarioInicial = $('#horarioInicial').val();
-        const horarioFinal = $('#horarioFinal').val();
-        const valor = $('#valor').val();
-        const desconto = $('#desconto').val();
-        const valorTotal = $('#valorTotal').val();
-        const metodoPagamento = $('#metodoPagamento').val();
-        const status = $('#status').val();
-        const convenio = $('#convenio').val();
-        const descricao = $('#descricao').val();
-
-        $.ajax({
-            url: '/atendimentos/salvar',  // Endpoint para salvar atendimento
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                nome: nome,
-                horarioInicial: horarioInicial,
-                horarioFinal: horarioFinal,
-                valor: valor,
-                desconto: desconto,
-                valorTotal: valorTotal,
-                metodoPagamento: metodoPagamento,
-                status: status,
-                convenio: convenio,
-                descricao: descricao
-            }),
-        
-            success: function() {
-                alert('Atendimento cadastrado com sucesso!');
-                window.location.href = '/atendimentos/listar'; // Redireciona para a lista de atendimentos após cadastro
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao cadastrar o atendimento:", status, error);
-                alert('Erro ao cadastrar o atendimento: ' + xhr.responseText);
-            }
-        });
-    }
-</script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function cadastrarAtendimento() {
+        const atendimento = {
+            nome: document.getElementById("nome").value,
+            horarioInicial: document.getElementById("horarioInicial").value,
+            horarioFinal: document.getElementById("horarioFinal").value,
+            valor: document.getElementById("valor").value,
+            desconto: document.getElementById("desconto").value,
+            valorTotal: document.getElementById("valorTotal").value,
+            metodoPagamento: document.getElementById("metodoPagamento").value,
+            status: document.getElementById("status").value,
+            convenio: document.getElementById("convenio").value,
+            descricao: document.getElementById("descricao").value
+        };
+
+        fetch('/atendimentos/salvar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(atendimento)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Atendimento cadastrado com sucesso!");
+                window.location.href = '/atendimentos/listar';
+            } else {
+                response.text().then(text => alert('Erro ao cadastrar: ' + text));
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+</script>
+
 </body>
 </html>
-

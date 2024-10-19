@@ -6,7 +6,7 @@ package com.gerenciamentoPsicologico.projeto.controller;
 
 import com.gerenciamentoPsicologico.projeto.model.Atendimento;
 import com.gerenciamentoPsicologico.projeto.model.AtendimentoRepository;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,46 +26,50 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/atendimentos")
 public class AtendimentoController {
+    
     @Autowired
     private AtendimentoRepository atendimentoRepository;
     
     @GetMapping("/cadastro")
-public String mostrarFormularioCadastro(Model model) {
-    model.addAttribute("atendimento", new Atendimento()); // Adiciona um novo objeto Filme ao modelo
-    return "cadastro-filme"; // Nome da página HTML para cadastrar filme
-}
-
-   @PostMapping("/salvar")
-    public ResponseEntity<String> salvarAtendimento(@RequestBody Atendimento atendimento) {
-        try {
-            atendimentoRepository.save(atendimento);
-            return ResponseEntity.ok("Filme cadastrado com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar o atendimento: " + e.getMessage());
-        }
+    public String mostrarFormularioCadastro(Model model) {
+        model.addAttribute("atendimento", new Atendimento()); // Adiciona um novo objeto Atendimento ao modelo
+        return "cadastroAtendimento"; // Nome da página HTML para cadastrar atendimento
     }
 
-     // Listar filmes
+@PostMapping("/salvar")
+public ResponseEntity<String> salvarAtendimento(@RequestBody Atendimento atendimento) {
+    try {
+        // Certifique-se de que todos os campos necessários estão preenchidos
+        if (atendimento.getHorarioInicial() == null) {
+            atendimento.setHorarioInicial(LocalDateTime.now()); // Define um valor padrão se necessário
+        }
+        atendimentoRepository.save(atendimento);
+        return ResponseEntity.ok("Atendimento cadastrado com sucesso!");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar o atendimento: " + e.getMessage());
+    }
+}
+
+
     @GetMapping("/listar")
     public String listarAtendimentos(Model model) {
         List<Atendimento> atendimentos = atendimentoRepository.findAll();
         model.addAttribute("atendimentos", atendimentos);
-        return "listarAtendimento"; // Retorna a tela de listar
+        return "listarAtendimentos"; // Nome do template HTML (listarAtendimentos.html)
     }
 
     @GetMapping("/detalhes/{id}")
     public String detalhesAtendimento(@PathVariable Long id, Model model) {
         Optional<Atendimento> optionalAtendimento = atendimentoRepository.findById(id);
         if (!optionalAtendimento.isPresent()) {
-            return "redirect:/atendimentos/listar"; // Redireciona se o filme não for encontrado
+            return "redirect:/atendimentos/listar"; // Redireciona se o atendimento não for encontrado
         }
         Atendimento atendimento = optionalAtendimento.get();
         model.addAttribute("atendimento", atendimento);
 
-        return "detalhesAtendimento"; // Nome da página HTML para detalhes do filme
+        return "detalhesAtendimento"; // Nome da página HTML para detalhes do atendimento
     }
 
-    // Atualizar filme
     @PutMapping("/atualizar/{id}")
     @ResponseBody
     public ResponseEntity<String> atualizarAtendimento(@PathVariable Long id, @RequestBody Atendimento updatedAtendimento) {
@@ -82,18 +86,20 @@ public String mostrarFormularioCadastro(Model model) {
             atendimento.setConvenio(updatedAtendimento.getConvenio());
             atendimento.setDescricao(updatedAtendimento.getDescricao());
             atendimentoRepository.save(atendimento);
-            return ResponseEntity.ok("atendimento atualizado com sucesso!");
+            return ResponseEntity.ok("Atendimento atualizado com sucesso!");
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-
-    // Excluir filme
     @DeleteMapping("/excluir/{id}")
     @ResponseBody
     public ResponseEntity<String> excluirAtendimento(@PathVariable Long id) {
-        atendimentoRepository.deleteById(id);
-        return ResponseEntity.ok("atendimento excluído com sucesso!");
+        try {
+            atendimentoRepository.deleteById(id);
+            return ResponseEntity.ok("Atendimento excluído com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir o atendimento: " + e.getMessage());
+        }
     }
 }

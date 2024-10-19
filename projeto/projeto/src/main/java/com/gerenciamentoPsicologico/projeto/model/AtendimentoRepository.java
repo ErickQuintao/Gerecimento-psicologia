@@ -7,7 +7,7 @@ package com.gerenciamentoPsicologico.projeto.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository  // Essa anotação é opcional quando você estende JpaRepository, mas pode ser usada para garantir que o Spring o reconheça como um bean
+@Repository 
 public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> {
     // Métodos personalizados podem ser adicionados aqui
 }

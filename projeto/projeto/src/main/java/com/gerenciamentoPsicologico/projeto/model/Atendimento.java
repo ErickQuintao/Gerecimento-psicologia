@@ -9,45 +9,37 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "atendimento")
 public class Atendimento {
-    @Id
+
+   @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nome")
     private String nome;
 
-    @Column(name = "horarioInicial")
+    @Column(name = "horario_inicial")
     private LocalDateTime horarioInicial;
 
-    @Column(name = "horarioFinal")
+    @Column(name = "horario_final")
     private LocalDateTime horarioFinal;
 
-    @Column(name = "valor")
     private int valor;
-
-    @Column(name = "desconto")
     private int desconto;
-
-    @Column(name = "valorTotal")
     private int valorTotal;
 
-    @Column(name = "metodoPagamento")
+    @Column(name = "metodo_pagamento")
     private String metodoPagamento;
 
-    @Column(name = "status")
     private String status;
-
-    @Column(name = "convenio")
     private String convenio;
-
-    @Column(name = "descricao")
     private String descricao;
+    // Getters and Setters
 
-    // Métodos get e set
     public Long getId() {
         return id;
     }
