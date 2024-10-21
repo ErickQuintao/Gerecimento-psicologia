@@ -19,7 +19,7 @@ public class Atendimento {
    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String nome;
 
     @Column(name = "horario_inicial")

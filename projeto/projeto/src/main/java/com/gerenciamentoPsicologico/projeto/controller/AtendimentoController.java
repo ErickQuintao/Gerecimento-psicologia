@@ -43,6 +43,9 @@ public ResponseEntity<String> salvarAtendimento(@RequestBody Atendimento atendim
         if (atendimento.getHorarioInicial() == null) {
             atendimento.setHorarioInicial(LocalDateTime.now()); // Define um valor padrão se necessário
         }
+           if (atendimento.getNome() == null || atendimento.getNome().isEmpty()) {
+        return ResponseEntity.badRequest().body("Erro: Nome não pode ser vazio e valor não pode ser negativo."); // Retorna erro se o nome estiver vazio
+    }
         atendimentoRepository.save(atendimento);
         return ResponseEntity.ok("Atendimento cadastrado com sucesso!");
     } catch (Exception e) {
@@ -82,36 +85,35 @@ public String exibirPaginaDeDetalhes(@PathVariable Long id, Model model) {
 
 
 
-    @PutMapping("/atualizar/{id}")
-    @ResponseBody
-    public ResponseEntity<String> atualizarAtendimento(@PathVariable Long id, @RequestBody Atendimento updatedAtendimento) {
-        Optional<Atendimento> optionalAtendimento = atendimentoRepository.findById(id);
-        if (optionalAtendimento.isPresent()) {
-            Atendimento atendimento = optionalAtendimento.get();
-            atendimento.setNome(updatedAtendimento.getNome());
-            atendimento.setHorarioInicial(updatedAtendimento.getHorarioInicial());
-            atendimento.setHorarioFinal(updatedAtendimento.getHorarioFinal());
-            atendimento.setValor(updatedAtendimento.getValor());
-            atendimento.setDesconto(updatedAtendimento.getDesconto());
-            atendimento.setValorTotal(updatedAtendimento.getValorTotal());
-            atendimento.setMetodoPagamento(updatedAtendimento.getMetodoPagamento());
-            atendimento.setConvenio(updatedAtendimento.getConvenio());
-            atendimento.setDescricao(updatedAtendimento.getDescricao());
-            atendimentoRepository.save(atendimento);
-            return ResponseEntity.ok("Atendimento atualizado com sucesso!");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    // Este método atualiza os dados do atendimento
+@PutMapping("/atualizar/{id}")
+@ResponseBody
+public ResponseEntity<Atendimento> atualizarAtendimento(@PathVariable Long id, @RequestBody Atendimento atendimentoAtualizado) {
+    Atendimento atendimento = atendimentoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Atendimento inválido: " + id));
 
-    @DeleteMapping("/excluir/{id}")
-    @ResponseBody
-    public ResponseEntity<String> excluirAtendimento(@PathVariable Long id) {
-        try {
-            atendimentoRepository.deleteById(id);
-            return ResponseEntity.ok("Atendimento excluído com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir o atendimento: " + e.getMessage());
-        }
-    }
+    // Atualiza os dados do atendimento
+    atendimento.setNome(atendimentoAtualizado.getNome());
+    atendimento.setHorarioInicial(atendimentoAtualizado.getHorarioInicial());
+    atendimento.setHorarioFinal(atendimentoAtualizado.getHorarioFinal());
+    atendimento.setValor(atendimentoAtualizado.getValor());
+    atendimento.setDesconto(atendimentoAtualizado.getDesconto());
+    atendimento.setValorTotal(atendimentoAtualizado.getValorTotal());
+    atendimento.setMetodoPagamento(atendimentoAtualizado.getMetodoPagamento());
+    atendimento.setStatus(atendimentoAtualizado.getStatus());
+    atendimento.setConvenio(atendimentoAtualizado.getConvenio());
+    atendimento.setDescricao(atendimentoAtualizado.getDescricao());
+
+    atendimentoRepository.save(atendimento);
+    return ResponseEntity.ok(atendimento);
+}
+
+// Este método exclui o atendimento
+@DeleteMapping("/excluir/{id}")
+@ResponseBody
+public ResponseEntity<Void> excluirAtendimento(@PathVariable Long id) {
+    atendimentoRepository.deleteById(id);
+    return ResponseEntity.noContent().build();
+}
+
 }
