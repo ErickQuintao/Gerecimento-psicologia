@@ -6,77 +6,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body onload="carregarAtendimento()">
     <div class="container mt-5">
-        <h2 th:text="'Atendimento ID: ' + ${atendimento.id}"></h2>
-
+        <h2>Detalhes do Atendimento</h2>
         <h3>Dados Atuais do Atendimento</h3>
-        <p><strong>Nome:</strong> <span th:text="${atendimento.nome}"></span></p>
-        <p><strong>Horário Inicial:</strong> <span th:text="${#dates.format(atendimento.horarioInicial, 'dd/MM/yyyy HH:mm')}"></span></p>
-        <p><strong>Horário Final:</strong> <span th:text="${#dates.format(atendimento.horarioFinal, 'dd/MM/yyyy HH:mm')}"></span></p>
-        <p><strong>Valor:</strong> <span th:text="${atendimento.valor}"></span></p>
-        <p><strong>Desconto:</strong> <span th:text="${atendimento.desconto}"></span></p>
-        <p><strong>Valor Total:</strong> <span th:text="${atendimento.valorTotal}"></span></p>
-        <p><strong>Método de Pagamento:</strong> <span th:text="${atendimento.metodoPagamento}"></span></p>
-        <p><strong>Status:</strong> <span th:text="${atendimento.status}"></span></p>
-        <p><strong>Convênio:</strong> <span th:text="${atendimento.convenio}"></span></p>
-        <p><strong>Descrição:</strong> <span th:text="${atendimento.descricao}"></span></p>
+        <p><strong>Nome:</strong> <span id="nomeAtendimento"></span></p>
+        <p><strong>Horário Inicial:</strong> <span id="horarioInicialAtendimento"></span></p>
+        <p><strong>Horário Final:</strong> <span id="horarioFinalAtendimento"></span></p>
+        <p><strong>Valor:</strong> <span id="valorAtendimento"></span></p>
+        <p><strong>Desconto:</strong> <span id="descontoAtendimento"></span></p>
+        <p><strong>Valor Total:</strong> <span id="valorTotalAtendimento"></span></p>
+        <p><strong>Método de Pagamento:</strong> <span id="metodoPagamentoAtendimento"></span></p>
+        <p><strong>Status:</strong> <span id="statusAtendimento"></span></p>
+        <p><strong>Convênio:</strong> <span id="convenioAtendimento"></span></p>
+        <p><strong>Descrição:</strong> <span id="descricaoAtendimento"></span></p>
 
         <h3>Atualizar Atendimento</h3>
         <form id="atendimentoForm">
-            <input type="hidden" id="atendimentoId" th:value="${atendimento.id}" />
-            
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" th:value="${atendimento.nome}" required>
-            </div>
-            <div class="mb-3">
-                <label for="horarioInicial" class="form-label">Horário Inicial</label>
-                <input type="datetime-local" class="form-control" id="horarioInicial" th:value="${#dates.format(atendimento.horarioInicial, 'yyyy-MM-dd\'T\'HH:mm')}" required>
-            </div>
-            <div class="mb-3">
-                <label for="horarioFinal" class="form-label">Horário Final</label>
-                <input type="datetime-local" class="form-control" id="horarioFinal" th:value="${#dates.format(atendimento.horarioFinal, 'yyyy-MM-dd\'T\'HH:mm')}" required>
-            </div>
-            <div class="mb-3">
-                <label for="valor" class="form-label">Valor</label>
-                <input type="number" class="form-control" id="valor" th:value="${atendimento.valor}" required>
-            </div>
-            <div class="mb-3">
-                <label for="desconto" class="form-label">Desconto</label>
-                <input type="number" class="form-control" id="desconto" th:value="${atendimento.desconto}" required>
-            </div>
-            <div class="mb-3">
-                <label for="valorTotal" class="form-label">Valor Total</label>
-                <input type="number" class="form-control" id="valorTotal" th:value="${atendimento.valorTotal}" required>
-            </div>
-            <div class="mb-3">
-                <label for="metodoPagamento" class="form-label">Método de Pagamento</label>
-                <select class="form-select" id="metodoPagamento" required>
-                    <option th:value="${atendimento.metodoPagamento}" th:text="${atendimento.metodoPagamento}" selected></option>
-                    <option value="dinheiro">Dinheiro</option>
-                    <option value="PIX">PIX</option>
-                    <option value="cartão">Cartão</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" required>
-                    <option th:value="${atendimento.status}" th:text="${atendimento.status}" selected></option>
-                    <option value="agendado">Agendado</option>
-                    <option value="andamento">Em Andamento</option>
-                    <option value="finalizado">Finalizado</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="convenio" class="form-label">Convênio</label>
-                <input type="text" class="form-control" id="convenio" th:value="${atendimento.convenio}" required>
-            </div>
-            <div class="mb-3">
-                <label for="descricao" class="form-label">Descrição</label>
-                <textarea class="form-control" id="descricao" required th:text="${atendimento.descricao}"></textarea>
-            </div>
-
+            <input type="hidden" id="atendimentoId" th:value="${id}" />
             <button type="button" onclick="atualizarAtendimento()" class="btn btn-primary mt-3">Alterar</button>
             <button type="button" onclick="excluirAtendimento()" class="btn btn-danger mt-3">Excluir</button>
         </form>
@@ -85,6 +32,32 @@
     </div>
 
     <script>
+        function carregarAtendimento() {
+            // Pega o ID do atendimento diretamente da URL
+            var id = window.location.pathname.split("/").pop(); // Obtém o último segmento da URL
+
+            $.ajax({
+                url: '/atendimentos/detalhes/json/' + id, // Aqui você pode usar o endpoint que retorna os dados em JSON
+                method: 'GET',
+                success: function(atendimento) {
+                    // Popula os dados na página
+                    $('#nomeAtendimento').text(atendimento.nome);
+                    $('#horarioInicialAtendimento').text(new Date(atendimento.horarioInicial).toLocaleString());
+                    $('#horarioFinalAtendimento').text(new Date(atendimento.horarioFinal).toLocaleString());
+                    $('#valorAtendimento').text(atendimento.valor);
+                    $('#descontoAtendimento').text(atendimento.desconto);
+                    $('#valorTotalAtendimento').text(atendimento.valorTotal);
+                    $('#metodoPagamentoAtendimento').text(atendimento.metodoPagamento);
+                    $('#statusAtendimento').text(atendimento.status);
+                    $('#convenioAtendimento').text(atendimento.convenio);
+                    $('#descricaoAtendimento').text(atendimento.descricao);
+                },
+                error: function(error) {
+                    alert('Erro ao carregar detalhes do atendimento.');
+                }
+            });
+        }
+        
         function atualizarAtendimento() {
        
             var id = document.getElementById("atendimentoId").value;
@@ -101,7 +74,7 @@
 
             $.ajax({
                 url: '/atendimentos/atualizar/' + id,
-                method: 'POST',
+                method: 'PUT',
                 data: {
                     nome: nome,
                     horarioInicial: horarioInicial,
@@ -129,7 +102,6 @@
         function excluirAtendimento() {
             var id = document.getElementById("atendimentoId").value;
 
-            /*
             $.ajax({
                 url: '/atendimentos/excluir/' + id,
                 method: 'DELETE',
@@ -142,7 +114,6 @@
                     alert('Erro ao excluir atendimento.');
                 }
             });
-            */
         }
     </script>
 </body>

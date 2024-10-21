@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listagem de Atendimentos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
 <div class="container">
     <h2 class="mt-5">Listagem de Atendimentos</h2>
-
+    
     <a href="/atendimentos/cadastro" class="btn btn-primary mb-3">Voltar ao Cadastro</a>
-
-    <table class="table table-bordered">
+    
+    <table class="table table-bordered" id="tabela-atendimentos">
         <thead>
             <tr>
                 <th>ID</th>
@@ -25,32 +27,64 @@
                 <th>Status</th>
                 <th>Convênio</th>
                 <th>Descrição</th>
-                
+                <th>Ações</th> <!-- Coluna para o botão de detalhes -->
             </tr>
         </thead>
         <tbody>
-            <tr th:each="atendimento : ${atendimentos}">
-                <td th:text="${atendimento.id}"></td>
-                <td th:text="${atendimento.nome}"></td>
-                <td th:text="${#dates.format(atendimento.horarioInicial, 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:text="${#dates.format(atendimento.horarioFinal, 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:text="${atendimento.valor}"></td>
-                <td th:text="${atendimento.desconto}"></td>
-                <td th:text="${atendimento.valorTotal}"></td>
-                <td th:text="${atendimento.metodoPagamento}"></td>
-                <td th:text="${atendimento.status}"></td>
-                <td th:text="${atendimento.convenio}"></td>
-                <td th:text="${atendimento.descricao}"></td>
-                <td>
-                    <a th:href="@{/atendimentos/detalhes/{id}(id=${atendimento.id})}" class="btn btn-info">Detalhes</a>
-                </td>
-            </tr>
+            <!-- As linhas da tabela serão geradas aqui pelo JavaScript -->
         </tbody>
     </table>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Função para buscar os dados da API
+        fetch('/atendimentos/dados') // Agora usa o endpoint '/dados'
+            .then(response => response.json()) // Converte a resposta para JSON
+            .then(data => {
+                const tabelaCorpo = document.querySelector("#tabela-atendimentos tbody");
+
+                // Itera sobre os dados recebidos e cria uma nova linha para cada atendimento
+                data.forEach(atendimento => {
+                    const row = document.createElement("tr");
+
+                    // Cria as células para cada campo e adiciona à linha
+                    row.innerHTML = `
+                        <td>${atendimento.id}</td>
+                        <td>${atendimento.nome}</td>
+                        <td>${formatarData(atendimento.horarioInicial)}</td>
+                        <td>${formatarData(atendimento.horarioFinal)}</td>
+                        <td>${atendimento.valor}</td>
+                        <td>${atendimento.desconto}</td>
+                        <td>${atendimento.valorTotal}</td>
+                        <td>${atendimento.metodoPagamento}</td>
+                        <td>${atendimento.status}</td>
+                        <td>${atendimento.convenio}</td>
+                        <td>${atendimento.descricao}</td>
+                        <td>
+                            <a href="/atendimentos/detalhes/${atendimento.id}" class="btn btn-info">Detalhes</a>
+                        </td>
+                    `;
+
+                    // Adiciona a linha na tabela
+                    tabelaCorpo.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Erro ao carregar os atendimentos:", error));
+    });
+
+    // Função para formatar as datas corretamente
+    function formatarData(dataString) {
+        const data = new Date(dataString);
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0'); // Meses são indexados de 0
+        const ano = data.getFullYear();
+        const horas = String(data.getHours()).padStart(2, '0');
+        const minutos = String(data.getMinutes()).padStart(2, '0');
+
+        return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+    }
+</script>
+
 </body>
 </html>

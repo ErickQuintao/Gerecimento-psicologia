@@ -50,25 +50,37 @@ public ResponseEntity<String> salvarAtendimento(@RequestBody Atendimento atendim
     }
 }
 
-
+   // Este método serve a página HTML com o JavaScript para popular os dados
     @GetMapping("/listar")
-    public String listarAtendimentos(Model model) {
-        List<Atendimento> atendimentos = atendimentoRepository.findAll();
-        model.addAttribute("atendimentos", atendimentos);
-        return "listarAtendimentos"; // Nome do template HTML (listarAtendimentos.html)
+    public String exibirPaginaDeListagem() {
+        return "listarAtendimento";  // Nome do arquivo HTML
     }
 
-    @GetMapping("/detalhes/{id}")
-    public String detalhesAtendimento(@PathVariable Long id, Model model) {
-        Optional<Atendimento> optionalAtendimento = atendimentoRepository.findById(id);
-        if (!optionalAtendimento.isPresent()) {
-            return "redirect:/atendimentos/listar"; // Redireciona se o atendimento não for encontrado
-        }
-        Atendimento atendimento = optionalAtendimento.get();
-        model.addAttribute("atendimento", atendimento);
-
-        return "detalhesAtendimento"; // Nome da página HTML para detalhes do atendimento
+    // Este método retorna os dados em formato JSON
+    @GetMapping("/dados")
+    @ResponseBody
+    public List<Atendimento> listarAtendimentos() {
+        return atendimentoRepository.findAll(); // Retorna os atendimentos como JSON
     }
+
+
+// Este método serve a página HTML para mostrar os detalhes do atendimento
+@GetMapping("/detalhes/{id}")
+public String exibirPaginaDeDetalhes(@PathVariable Long id, Model model) {
+    // Adiciona apenas o ID do atendimento ao modelo, se necessário
+    model.addAttribute("id", id);
+    return "detalhesAtendimento";  // Nome do arquivo HTML
+}
+    // Este método retorna os dados do atendimento em formato JSON
+    @GetMapping("/detalhes/json/{id}")
+    @ResponseBody
+    public ResponseEntity<Atendimento> getAtendimentoPorId(@PathVariable Long id) {
+        Atendimento atendimento = atendimentoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Atendimento inválido: " + id));
+        return ResponseEntity.ok(atendimento);  // Retorna o atendimento como JSON
+    }
+
+
 
     @PutMapping("/atualizar/{id}")
     @ResponseBody
